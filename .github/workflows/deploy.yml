@@ -1,17 +1,16 @@
-name: Deploy Vue to GitHub Pages
+name: Deploy Vue CLI to GitHub Pages
 
 on:
   push:
     branches: ["main"]   # 如果你的默认分支是 master，请改为 master
-  workflow_dispatch:     # 允许手动触发
+  workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 的权限
+# 设置部署权限
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 避免同时部署冲突
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -27,18 +26,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'   # 利用缓存加速安装
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci      # 推荐用 ci，比 npm install 更快更稳定
+        run: npm ci   # 如果报错，可改成 npm install
 
-      - name: Build Vue project
-        run: npm run build  # 默认生成 dist 文件夹
+      - name: Build Vue CLI project
+        run: npm run build   # Vue CLI 默认输出到 dist 文件夹
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist      # 上传构建产物
+          path: ./dist   # 关键：Vue CLI 构建产物在这里
 
   deploy:
     environment:
